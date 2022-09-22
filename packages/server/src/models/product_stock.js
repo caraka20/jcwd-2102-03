@@ -9,7 +9,7 @@ const ProductStock = (sequelize) => {
         },
         total_sold:{
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         init_price:{
             type: DataTypes.STRING,
@@ -21,8 +21,13 @@ const ProductStock = (sequelize) => {
         },
         is_converted:{
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: false
         },
+        amount_per_stock:{
+            type: DataTypes.INTEGER,
+            allowNull: true
+        }
     }, {
         paranoid: true
     })

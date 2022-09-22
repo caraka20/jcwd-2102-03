@@ -9,6 +9,7 @@ const PORT = process.env.PORT
 const { sequelize } = require("./lib/sequelize")
 const userController = require("./routes/user")
 const categoryController = require("./routes/category")
+const productController = require("./routes/product")
 
 const app = express()
 app.use(bodyParser.urlencoded({extended: true}))
@@ -23,7 +24,11 @@ app.use(cors())
 app.use(express.json())
 
 app.use("/user", userController)
-app.use("/categories", categoryController)
+app.use("/category", categoryController)
+app.use("/product", productController)
+
+app.use("/category_img", express.static(`${__dirname}/public/category_img`))
+app.use("/img_url", express.static(`${__dirname}/public/product_img`))
 
 app.get("/", (req, res) => {
     res.send("API is running")

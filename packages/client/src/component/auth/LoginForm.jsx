@@ -70,7 +70,7 @@ import Image from "next/image";
     return(
       <>
       {/* <HStack> */}  
-        {/* <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}> */}
+        <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>
             <Image src={logo} height={'42px'} width={"192px"}></Image>
             <Heading fontSize={"4xl"} alignSelf={"center"}>Welcome</Heading>
@@ -134,7 +134,7 @@ import Image from "next/image";
               <Link onClick={() => router.push("/signup")} colorScheme="facebook"> Register now!</Link>
               </Text>
           </Box>
-        {/* </Stack> */}
+        </Stack>
       {/* </HStack> */}
       </>
     )

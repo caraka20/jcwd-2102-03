@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize")
 const ProductImage = (sequelize) => {
     return sequelize.define(
     "ProductImage", {
-        img_url:{
+        product_image:{
             type: DataTypes.STRING,
             allowNull: false
         },
