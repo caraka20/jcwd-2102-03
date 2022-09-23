@@ -11,6 +11,10 @@ export default function login(){
     const [loading, setIsLoading] = useState(true)
 
     return(
-            <LoginForm></LoginForm>
+        <Flex align={"center"}>
+            <Box flex={10}>
+                <LoginForm></LoginForm>
+            </Box>
+        </Flex>
     )
 }

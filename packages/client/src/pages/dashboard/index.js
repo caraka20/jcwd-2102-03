@@ -8,10 +8,11 @@ import { useEffect } from "react"
 import { useRouter } from "next/router"
 import { useSelector } from "react-redux"
 import Sidebar from "../../component/admin/ResponsiveSidebar"
+import TableCategory from "../../component/admin/TableCategory"
 
 export default function dashboard(){
     
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
     const userSelector = useSelector((state)=>state.auth)
 
@@ -38,10 +39,14 @@ export default function dashboard(){
                 <title>Medicure</title>
             </Head>
 
-            <Flex flexDir={"column"}>
             <AdminNav></AdminNav>
-
-            <Sidebar></Sidebar>
+            <Flex flexDir={"row"}>
+                <Box flex={2}>
+                    <Sidebar/>
+                </Box>
+                <Box flex={10}>
+                    <TableCategory></TableCategory>
+                </Box>
             </Flex>
 
 
