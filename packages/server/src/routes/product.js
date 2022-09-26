@@ -38,4 +38,6 @@ router.post(
     }).single("product_image"),
     productController.updateProduct)
 
+router.get("/", productController.getAllProducts)
+
 module.exports = router

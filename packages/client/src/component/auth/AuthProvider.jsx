@@ -25,7 +25,7 @@ function AuthProvider({children}) {
 
                 dispatch ({
                     type: auth_types.AUTH_LOGIN,
-                    payload: userResponse.data.result.user,
+                    payload: userResponse.data?.result.user,
                 })
             }
             setIsAuthChecked(true)

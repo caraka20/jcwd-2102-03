@@ -4,7 +4,7 @@ const ProductStock = (sequelize) => {
     return sequelize.define(
     "ProductStock", {
         stock:{
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         total_sold:{
