@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import RegisterForm from "../../component/auth/RegisterForm";
 
-export default function signup(){
+export default function Signup(){
     
     const userSelector = useSelector((state)=> state.auth)
     const router = useRouter()

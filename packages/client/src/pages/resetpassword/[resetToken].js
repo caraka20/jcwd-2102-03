@@ -7,7 +7,7 @@ import Image from 'next/image'
 // import invalidToken from '../../assets/imgs/invalid.gif'
 import ForgotPasswordForm from '../../component/auth/ForgotPasswordForm';
 
-export default function changePass() {
+export default function ChangePassword() {
   const [verified, setVerified] = useState(false)
   const router = useRouter()
   const { resetToken } = router.query

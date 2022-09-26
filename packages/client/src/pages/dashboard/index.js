@@ -10,7 +10,7 @@ import { useSelector } from "react-redux"
 import Sidebar from "../../component/admin/ResponsiveSidebar"
 import TableCategory from "../../component/admin/Tables/TableCategory"
 
-export default function dashboard(){
+export default function Dashboard(){
     
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()

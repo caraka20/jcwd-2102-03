@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import LoginForm from "../../component/auth/LoginForm";
 import { Flex, Box } from "@chakra-ui/react";
 
-export default function login(){
+export default function Login(){
     
     const userSelector = useSelector((state)=> state.auth)
     const router = useRouter()
