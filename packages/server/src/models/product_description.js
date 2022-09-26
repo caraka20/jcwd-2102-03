@@ -8,7 +8,7 @@ const ProductDescription = (sequelize) => {
             allowNull: false
         },
         composition:{
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         warning:{

@@ -7,7 +7,8 @@ import banner from '../../asset/imgs/medicure-banner.png'
 // import Footer from "../../component/footer"
 import EditProfile from "../../component/profile/EditProfile"
 
-export default function profile(){
+export default function Profile(){
+    
     
     const [isLoading, setIsLoading] = useState(false)
 

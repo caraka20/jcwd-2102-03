@@ -8,13 +8,14 @@ import { useEffect } from "react"
 import { useRouter } from "next/router"
 import { useSelector } from "react-redux"
 import Sidebar from "../../component/admin/ResponsiveSidebar"
-import TableCategory from "../../component/admin/TableCategory"
+import TableCategory from "../../component/admin/Tables/TableCategory"
 
-export default function dashboard(){
+export default function Dashboard(){
     
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
     const userSelector = useSelector((state)=>state.auth)
+    const [showTable, setShowTable] = useState([])
 
     useEffect(() => {
         if (!userSelector?.is_admin) {

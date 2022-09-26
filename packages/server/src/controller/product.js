@@ -19,6 +19,8 @@ const productController = {
                 product_name, 
                 bpom_code, 
                 type,
+                desc,
+                type_hist,
                 id_product,
                 id_unit,
                 description,
@@ -29,25 +31,37 @@ const productController = {
                 init_price, 
                 sell_price, 
                 amount_per_stock,
-                arr_cat
             } = req.body
+
+            console.log(req.body)
+
+            // const arr_cat = [14, 11];
 
             const { filename } = req.file
             
             const newProduct = await Product.create({
                 product_name,
                 bpom_code,
-                type,  
+                type: type,  
             })
-            
-            // const lastCreatedProduct = await Product.max("id")
 
-            arr_cat.map((val) => {
+            arr_cat.map((val) => (
                 ProductCategory.create({
                     id_product: newProduct.id,
-                    id_category: val.id
+                    id_category: val
                 })
-            })
+            ))
+            
+            // const lastCreatedProduct = await Product.max("id")
+            // console.log(arr_cat)
+
+            // string_cat.map((val) => {
+            //     ProductCategory.create({
+            //         id_product: newProduct.id,
+            //         id_category: val.id
+            //     })
+            // })
+
 
             await ProductDescription.create({
                 description,
@@ -58,7 +72,7 @@ const productController = {
             })
 
             await ProductImage.create({
-                img_url: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
+                product_image: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
                 id_product: newProduct.id
             })
 
@@ -72,11 +86,11 @@ const productController = {
             })
 
             await StockHistory.create({
-                qty,
-                type,
+                qty: stock,
+                type: type_hist,
                 desc,
                 id_unit,
-                id_product: lastCreatedProduct
+                id_product: newProduct.id
             })
 
             return res.status(200).json({
@@ -229,7 +243,7 @@ const productController = {
                 })
 
             } else {
-                
+
                 findProduct = await Product.findAll({
                     offset: (page - 1) * limit,
                     limit: limit ? parseInt(limit) : undefined,
@@ -244,7 +258,7 @@ const productController = {
                         include: [{
                             model: Category,
                             where: category1 || category2 || category3 ? {
-                                [Op.or]: [{category}]
+                                [Op.or]: [{category1}]
                             } : {}
                         }],
                     },
@@ -284,80 +298,150 @@ const productController = {
                 product_name, 
                 bpom_code, 
                 type,
+                desc,
+                type_hist,
                 id_unit,
                 description,
                 composition,
                 warning,
                 expire,
-                stock,
+                stock, 
                 init_price, 
                 sell_price, 
                 amount_per_stock,
+                arr_cat
             } = req.body
 
-            const { id } = req.params
+            const { id_prod } = req.params
+
+            console.log(req.body)
+
+            console.log(req.params)
+
+            // const arr_cat = [14, 11];
+
+            const { filename } = req.file
             
-            await Product.patch({
+            await Product.update({
                 product_name,
                 bpom_code,
-                type,
+                type: type,  
             },{
                 where: {
-                    id: id
-                },
+                    id: id_prod
+                }
             })
 
-            await ProductDescription.patch({
+            const product = await Product.findByPk(id_prod)
+            console.log(product)
+
+            arr_cat.map((val) => (
+                ProductCategory.update({
+                    id_category: val
+                },{
+                    where: {
+                        id_product: id_prod
+                    }
+                })
+            ))
+            
+            // const lastCreatedProduct = await Product.max("id")
+            // console.log(arr_cat)
+
+            // string_cat.map((val) => {
+            //     ProductCategory.create({
+            //         id_product: newProduct.id,
+            //         id_category: val.id
+            //     })
+            // })
+
+
+            await ProductDescription.update({
                 description,
                 composition,
                 warning,
                 expire,
             },{
                 where: {
-                    id: id
+                    id_product: id_prod
                 }
             })
 
-            await ProductImage.patch({
-                img_url: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
+            await ProductImage.update({
+                product_image: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
             },{
-               where: {
-                    id: id
-               } 
+                where: {
+                    id_product: id_prod
+                }
             })
 
-            await ProductStock.patch({
+            await ProductStock.update({
                 stock,
                 init_price,
                 sell_price,
                 amount_per_stock,
                 id_unit,
+                
             },{
                 where: {
-                    id_product: id
+                    id_product: id_prod
                 }
             })
 
-            await StockHistory.create({
-                qty,
-                type,
+            await StockHistory.update({
+                qty: stock,
+                type: type_hist,
                 desc,
                 id_unit,
-                id_product : id
+            },{
+                where:{
+                    id_product: id_prod
+                }
             })
 
             return res.status(200).json({
                 message: "New product created",
+                result: product,
             })
-
         } catch (err) {
             console.log(err)
             
             res.status(400).json({
                 message: err.toString()
             })
+
         }
     },
+
+    getAllProducts: async(req, res) => {
+        try{
+            const { limit = 10, page = 1 } = req.query
+
+            const findProduct = await Product.findAll({
+                include:[ 
+                    ProductCategory, 
+                    ProductStock, 
+                    ProductImage, 
+                    ProductDescription, 
+                ],
+                limit: limit ? parseInt(limit) : null,
+                offset: (page - 1) * limit,
+                order: [["createdAt", "DESC"]]
+            });
+
+            return res.status(200).json({
+                message: "fetching product",
+                results: findProduct,
+            })
+
+        } catch (err) {
+            console.log(err)
+
+            res.status(400).json({
+                message: "Error fetching"
+            })
+        }
+    }
 }
 
 module.exports = productController;

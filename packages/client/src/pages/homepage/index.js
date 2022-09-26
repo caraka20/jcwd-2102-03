@@ -5,7 +5,7 @@ import Navbar from "../../component/navbars/Navbar"
 import Image from 'next/image'
 import banner from '../../asset/imgs/medicure-banner.png'
 
-export default function homepage(){
+export default function Homepage(){
     
     const [isLoading, setIsLoading] = useState(false)
 

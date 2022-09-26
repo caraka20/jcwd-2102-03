@@ -75,7 +75,7 @@ const categoryController = {
 
             const  filename = req.file?.filename
 
-            const editParams = {name}
+            const editParams = { name }
 
             if(category_img && filename){
                 editParams.category_img = `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_CATIMG}/${filename}`

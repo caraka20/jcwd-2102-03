@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { BiError } from "react-icons/bi"
   
   
-  export default function verificaton(){
+  export default function Verification(){
 
     const [verified, setVerified] = useState(false)
 
