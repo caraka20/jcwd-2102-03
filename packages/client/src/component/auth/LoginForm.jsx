@@ -57,11 +57,11 @@ import Image from "next/image";
     useEffect(()=> {
       if (userSelector?.id) {
         if(userSelector?.is_admin === true){
-          router.push("/dashboard")
+          router.push("/Dashboard")
         }
         else
         {
-          router.push("/homepage");
+          router.push("/Homepage");
           console.log(userSelector)
         }
       }

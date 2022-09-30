@@ -19,23 +19,31 @@ const productController = {
                 product_name, 
                 bpom_code, 
                 type,
-                desc,
-                type_hist,
-                id_product,
+                product_image,
                 id_unit,
                 description,
-                composition,
-                warning,
-                expire,
                 stock, 
                 init_price, 
                 sell_price, 
                 amount_per_stock,
+                desc,
+                type_hist,
+                category1,
+                category2,
+                category3
             } = req.body
 
             console.log(req.body)
+            
+            const arr_cat = [category1, category2, category3];
 
-            // const arr_cat = [14, 11];
+            if(category3 == null){
+                arr_cat.splice(2, 1)
+            }
+
+            if(category2 == null && category3 == null){
+                arr_cat.splice(2, 2)
+            }
 
             const { filename } = req.file
             
@@ -65,9 +73,6 @@ const productController = {
 
             await ProductDescription.create({
                 description,
-                composition,
-                warning,
-                expire,
                 id_product: newProduct.id
             })
 
@@ -206,14 +211,16 @@ const productController = {
 
     getAllProduct4Admin: async (req, res) => {
         try{
-            const { orderby, sort, category1, page = 1, limit, searchcondition, category2, category3} = req.query
-
+            const { orderby, sort, category1, page = 1, limit = 5, searchcondition, category2, category3} = req.query
+            
             let findProduct
+            
+            if (!req.query) {
+                
+                console.log("masuk if")
+                console.log(req.query)
 
-            if (!searchcondition) {
                 findProduct = await Product.findAll({
-                    offset: (page- -1) * limit,
-                    limit: limit ? parseInt(limit) : undefined,
                     where: {
                         deletedAt: {
                             [Op.ne] : true
@@ -241,6 +248,8 @@ const productController = {
                     orderby == "sell_price" && sort ? [[ProductStock, `${orderby}`, `${sort}`]]
                     : [],
                 })
+
+                console.log("error opne")
 
             } else {
 
@@ -417,12 +426,13 @@ const productController = {
         try{
             const { limit = 10, page = 1 } = req.query
 
-            const findProduct = await Product.findAll({
-                include:[ 
-                    ProductCategory, 
-                    ProductStock, 
-                    ProductImage, 
-                    ProductDescription, 
+            const findProduct = await ProductStock.findAll({
+                include:[
+                    {model: Unit},
+                    {model: Product,
+                        include:[
+                            {model: ProductImage},
+                        ]}
                 ],
                 limit: limit ? parseInt(limit) : null,
                 offset: (page - 1) * limit,

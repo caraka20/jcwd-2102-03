@@ -36,10 +36,11 @@ Address.belongsTo(User, {foreignKey:"id_user"})
 User.hasMany(Token, {foreignKey: "id_user"})
 Token.belongsTo(User, {foreignKey: "id_user"})
 
-User.hasMany(Payment, {foreignKey: "id_user"})
-Payment.belongsTo(User, {foreignKey: "id_user"})
 Payment.hasOne(Order, {foreignKey: "id_payment"})
 Order.belongsTo(Payment, {foreignKey: "id_payment"})
+
+User.hasMany(Order, {foreignKey: "id_user"})
+Order.belongsTo(User, {foreignKey: "id_user"})
 
 User.hasMany(Prescription, {foreignKey: "id_user"})
 Prescription.belongsTo(User, {foreignKey: "id_user"})

@@ -71,15 +71,16 @@ const categoryController = {
         try{
             const { id } = req.params;
 
-            const { name, category_img } = req.body
+            const { name } = req.body
 
             const  filename = req.file?.filename
 
             const editParams = { name }
 
-            if(category_img && filename){
+            if(filename){
                 editParams.category_img = `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_CATIMG}/${filename}`
             } 
+            
             if(editParams){
                 await Category.update(
 

@@ -1,16 +1,15 @@
 import { Box, Center, Divider, Flex, Heading, Spinner, VStack, Text, Avatar } from "@chakra-ui/react"
 import { useState } from "react"
 import Head from "next/head"
-import AdminNav from "../../component/navbars/AdminNavbar"
+import AdminNav from "../../../component/navbars/AdminNavbar"
 import Image from 'next/image'
-import banner from '../../asset/imgs/medicure-banner.png'
 import { useEffect } from "react"
 import { useRouter } from "next/router"
 import { useSelector } from "react-redux"
-import Sidebar from "../../component/admin/ResponsiveSidebar"
-import TableCategory from "../../component/admin/Tables/TableCategory"
+import Sidebar from "../../../component/admin/ResponsiveSidebar"
+import AddProductForm from "../../../component/admin/Forms/AddProductForm"
 
-export default function Dashboard(){
+export default function AddProduct(){
     
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
@@ -46,7 +45,7 @@ export default function Dashboard(){
                     <Sidebar/>
                 </Box>
                 <Box flex={10}>
-                    <TableCategory></TableCategory>
+                    <AddProductForm></AddProductForm>
                 </Box>
             </Flex>
 
