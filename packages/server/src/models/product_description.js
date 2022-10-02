@@ -6,19 +6,7 @@ const ProductDescription = (sequelize) => {
         description:{
             type: DataTypes.STRING,
             allowNull: false
-        },
-        composition:{
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        warning:{
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        expire:{
-            type: DataTypes.DATE,
-            allowNull: false
-        },
+        }
     }, {
         paranoid: true
     })

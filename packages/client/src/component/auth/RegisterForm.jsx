@@ -196,7 +196,7 @@ import {
                         _hover={{
                             bg: 'blue.500',
                         }}
-                        onClick={submit}
+                        onClick={submit()}
                         disabled={formik.values.username && formik.values.email && formik.values.password && formik.values.passwordConfirmation ? false : true }
                          >
                         Sign up
@@ -206,7 +206,7 @@ import {
                         </Button> */}
                     </Stack>
 
-                    <Link onClick={() => router.push("/homepage")} color="facebook" textAlign={"center"}>
+                    <Link onClick={() => router.push("/Login")} color="facebook" textAlign={"center"}>
                             Already have an account?
                           </Link>
                     </Stack>

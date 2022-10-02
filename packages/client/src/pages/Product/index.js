@@ -9,8 +9,9 @@ import { useRouter } from "next/router"
 import { useSelector } from "react-redux"
 import Sidebar from "../../component/admin/ResponsiveSidebar"
 import TableCategory from "../../component/admin/Tables/TableCategory"
+import TableProduct from "../../component/admin/Tables/TableProduct"
 
-export default function Dashboard(){
+export default function Product(){
     
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
@@ -46,7 +47,7 @@ export default function Dashboard(){
                     <Sidebar/>
                 </Box>
                 <Box flex={10}>
-                    <TableCategory></TableCategory>
+                    <TableProduct></TableProduct>
                 </Box>
             </Flex>
 

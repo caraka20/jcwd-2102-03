@@ -200,7 +200,7 @@ export default function Navbar() {
               </MenuButton>
               <MenuList align={"center"}>
                 <MenuGroup title={`Hello, ${userSelector.username}`}>
-                <MenuItem onClick={ () => router.push("/profile/" + userSelector.id)}>My Profile</MenuItem>
+                <MenuItem onClick={ () => router.push("/Profile/" + userSelector.id)}>My Profile</MenuItem>
                 <MenuItem >Transaction</MenuItem>
                 </MenuGroup>
                 <MenuDivider/>
@@ -215,7 +215,7 @@ export default function Navbar() {
             <>
                 <Button bgColor="white" 
                 leftIcon={<Image src={signinlogo} />} 
-                onClick={()=> router.push("/login")}
+                onClick={()=> router.push("/Login")}
                 borderColor={"teal"}>
                   Sign In
                 </Button>

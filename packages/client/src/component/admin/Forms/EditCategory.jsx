@@ -14,6 +14,7 @@ import {
 } 
 from "@chakra-ui/react";
 import {
+    EditIcon,
     SettingsIcon,
 } from "@chakra-ui/icons"
 import { Modal, Group } from '@mantine/core'
@@ -108,7 +109,7 @@ export default function EditCategoryForm(props) {
         <Group>
             <Button 
                 onClick={() => setOpened2(true)}>
-                    <SettingsIcon></SettingsIcon>
+                    <EditIcon></EditIcon>
             </Button>
         </Group>
         </>

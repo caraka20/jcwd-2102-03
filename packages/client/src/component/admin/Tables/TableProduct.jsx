@@ -20,6 +20,8 @@ import {
 import {
     SettingsIcon,
     DeleteIcon,
+    PlusSquareIcon,
+    EditIcon,
 } from "@chakra-ui/icons"
 import { Modal, Group } from '@mantine/core'
 import { axiosInstance } from "../../../lib/hoc/api"
@@ -31,6 +33,8 @@ import { useEffect } from "react"
 import { useToast } from "@chakra-ui/react"
 import AddCategoryForm from "../Forms/AddCategoryForm"
 import EditCategoryForm from "../Forms/EditCategory"
+import AddProductForm from "../Forms/AddProductForm"
+import Image from "next/image"
 
 
 export default function TableProduct (props) {
@@ -116,22 +120,35 @@ export default function TableProduct (props) {
                 <Tr>
                     <Td>{val.id}</Td>
                     <Td>
-                       <Img src={val?.product_img} w={"90px"} h={"50px"}/>
+                       {/* <Image 
+                        src={`${val.ProductImages[0].product_image}`} 
+                        width={100} 
+                        height={100}/> */}
+                        <Img src={`${val.Product.ProductImages[0].product_image}`}
+                        w={"100px"}
+                        h={"50px"}>
+                        </Img>
                     </Td>
                     <Td>
-                        {val.bpom_code}
+                        {val.Product.bpom_code}
                     </Td>
                     <Td>
-                        {val.product_name}
+                        {val.Product.product_name}
                     </Td>
                     <Td>
                         {val.stock}
                     </Td>
                     <Td>
-                        {val.id_unit}
+                        {val.Unit.unit_name}
                     </Td>
                     <Td>
-                        {val.name}
+                        {val.amount_per_stock}
+                    </Td>
+                    <Td>
+                      Rp {val.init_price}
+                    </Td>
+                    <Td>
+                       Rp {val.sell_price}
                     </Td>
                     <Td>
                         <EditCategoryForm key={index}
@@ -188,11 +205,14 @@ export default function TableProduct (props) {
               </Text>
              
             </Flex>
-  
-            
+
+                <Button leftIcon={<PlusSquareIcon />} colorScheme='teal' variant='solid'>
+                Add Product
+                </Button>
+      
                 <Modal opened={opened}
                 onClose={()=> setOpened(false)}>
-                    <AddCategoryForm />
+                    <AddProductForm />
                 </Modal>
                 <Group>
                     <Button bgColor="gray.200" 

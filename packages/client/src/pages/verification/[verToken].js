@@ -77,7 +77,7 @@ import { BiError } from "react-icons/bi"
             </>
           } 
           </Heading>
-          <Button onClick={()=> router.push("/homepage")}>
+          <Button onClick={()=> router.push("/Homepage")}>
           Back to Homepage
           </Button>
     
