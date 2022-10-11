@@ -63,25 +63,25 @@ export default function Sidebar() {
                     }}
                 />
 
-                <NextLink href={"/homepage"}>
+                <NextLink href={"/Dashboard"}>
                     <Link>
                         <NavItem navSize={navSize} icon={FiHome} title="Dashboard" />
                     </Link>
                 </NextLink>
 
-                <NextLink href={"/adminproducts"}>
+                <NextLink href={"/Product"}>
                     <Link>
                         <NavItem navSize={navSize} icon={FiBox} title="Products" />
                     </Link>
                 </NextLink>
 
-                <NextLink href={"/adminorders"}>
+                <NextLink href={"/Order"}>
                     <Link>
                         <NavItem navSize={navSize} icon={FiUser} title="Orders" />
                     </Link>
                 </NextLink>
 
-                <NextLink href={"/adminsales"}>
+                <NextLink href={"/Sales"}>
                     <Link>
                         <NavItem navSize={navSize} icon={FiActivity} title="Sales Report" />
                     </Link>

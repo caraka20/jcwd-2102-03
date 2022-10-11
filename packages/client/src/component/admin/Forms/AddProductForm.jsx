@@ -4,12 +4,13 @@ import { useRef } from "react";
 import { useState } from "react";
 import { axiosInstance } from "../../../lib/hoc/api";
 import { useToast, } from "@chakra-ui/react";
-import { ref } from "yup";
-import * as moment from "moment"
 import NextImage from "next/image";
-import qs from "querystring"
+import { Modal, Group } from '@mantine/core'
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import {
+    PlusSquareIcon,
+} from "@chakra-ui/icons"
 
 
 export default function AddProductForm(){
@@ -25,6 +26,7 @@ export default function AddProductForm(){
     const renderDataUnit = useSelector((state)=> state.unit)
     const [loadDataCategory, setLoadDataCategory] = useState(1)
     const [loadDataUnit, setLoadDataUnit] = useState(1)
+    const [opened, setOpened] = useState(false)
 
     
     const fetchUnit = async () => {
@@ -58,7 +60,7 @@ export default function AddProductForm(){
     const renderUnitOption = () => {
         return listUnit.map((val, index)=>{
             return(
-                    <option value={val.id}>{val.unit_name}</option>
+                    <option key={index} value={val.id}>{val.unit_name}</option>
             )
         })
     }
@@ -66,7 +68,7 @@ export default function AddProductForm(){
     const renderCategoryOption = () => {
         return listCategory.map((val, index)=> {
             return(
-                <option value={val.id}>{val.name}</option>
+                <option key={index} value={val.id}>{val.name}</option>
             )
         })
     }
@@ -85,18 +87,18 @@ export default function AddProductForm(){
             type: "",
             id_unit: "",
             category1: "",
-            category2: "",
-            category3: "",
             description: "",
             stock: "",
             init_price:"",
             sell_price:"",
             amount_per_stock: "",
-            desc: "Created new product",
-            type_hist: "Addition",
+            desc: "Penambahan",
+            type_hist: "Update Stock",
         },
 
         onSubmit: async () => {
+
+            const formData = new FormData()
 
             const { 
                 product_name, 
@@ -109,36 +111,30 @@ export default function AddProductForm(){
                 sell_price,
                 amount_per_stock,
                 category1,
-                category2,
-                category3,
                 type_hist,
                 desc,
             } = formik.values
 
-            let body = {
-                product_name: product_name,
-                bpom_code: bpom_code,
-                type: type,
-                id_unit: id_unit,
-                category1: category1,
-                category2: category2,
-                category3: category3,
-                description: description,
-                stock: stock,
-                init_price: init_price,
-                sell_price: sell_price,
-                amount_per_stock: amount_per_stock,
-                product_image: selectedFile,
-                type_hist,
-                desc,
-            }
+            formData.append("product_name", product_name)
+            formData.append("bpom_code", bpom_code)
+            formData.append("type", type)
+            formData.append("id_unit", id_unit)
+            formData.append("category1", category1)
+            formData.append("description", description)
+            formData.append("stock", stock)
+            formData.append("init_price", init_price)
+            formData.append("sell_price", sell_price)
+            formData.append("amount_per_stock", amount_per_stock)
+            formData.append("product_image", selectedFile)
+            formData.append("type_hist", type_hist)
+            formData.append("desc", desc)
 
             try{
 
-                await axiosInstance.post("/product/", qs.stringify(body)).then(() => {
+                await axiosInstance.post("/product/", formData).then(() => {
 
                     toast({
-                        title: "New category has been added",
+                        title: "New product has been added",
                         status: "success",
                         isClosable: true,
                     })
@@ -150,7 +146,7 @@ export default function AddProductForm(){
                 toast({
                     title: "Error",
                     status: "Error",
-                    description: "Error creating category",
+                    description: "Error creating product",
                     isClosable: true,
                 })
             }
@@ -158,6 +154,9 @@ export default function AddProductForm(){
     })
 
     return (
+        <>
+        <Modal size={"full"} opened={opened}
+        onClose={()=> setOpened(false)}>
         <Flex flexDir={"row"} justify={"space-between"}>
             <Box flex={3} mr={"5"}>
                 <Stack spacing={3}>
@@ -182,7 +181,7 @@ export default function AddProductForm(){
                     <FormControl>
                         <FormLabel>Product Description</FormLabel>
                         <Textarea onChange={(event) => formik.setFieldValue("description", event.target.value)}>
-                        </Textarea>
+                            </Textarea>
                     </FormControl>
                     <FormControl>
                     <FormLabel>Unit</FormLabel>
@@ -195,20 +194,6 @@ export default function AddProductForm(){
                     <FormLabel>Category 1</FormLabel>
                     <Select onChange={(event) => formik.setFieldValue("category1", event.target.value)}
                      placeholder="Select product category">
-                        {renderCategoryOption()}
-                    </Select>
-                </FormControl>
-                <FormControl>
-                    <FormLabel>Category 2</FormLabel>
-                    <Select onChange={(event) => formik.setFieldValue("category2", event.target.value)} 
-                    placeholder="Select product category">
-                        {renderCategoryOption()}
-                    </Select>
-                </FormControl>
-                <FormControl>
-                    <FormLabel>Category 3</FormLabel>
-                    <Select onChange={(event) => formik.setFieldValue("category3", event.target.value)} 
-                    placeholder="Select product category">
                         {renderCategoryOption()}
                     </Select>
                 </FormControl>
@@ -230,7 +215,7 @@ export default function AddProductForm(){
                         pointerEvents={'none'}
                         color={"gray"}
                         fontSize="sm"
-                        children="Rp"/>
+                        />
                         <Input onChange={(event) => formik.setFieldValue("init_price", event.target.value)}
                         placeholder="Enter amount"></Input>
                     </InputGroup>
@@ -242,14 +227,14 @@ export default function AddProductForm(){
                         pointerEvents={'none'}
                         color={"gray"}
                         fontSize="sm"
-                        children="Rp"/>
+                        />
                         <Input onChange={(event) => formik.setFieldValue("sell_price", event.target.value)}
                         placeholder="Enter amount"></Input>
                     </InputGroup>
                 </FormControl>
                     <FormLabel>Contents Per Stock</FormLabel>
-                    <NumberInput defaultValue={0}>
-                        <NumberInputField />
+                    <NumberInput>
+                        <NumberInputField onChange={(event) => formik.setFieldValue("amount_per_stock", event.target.value)}/>
                     </NumberInput>
                 </Stack>
             <Box minW='400px' minH='300px' >
@@ -270,7 +255,7 @@ export default function AddProductForm(){
                             setSelectedFile(null)
                         }}>Cancel</Button>
                     </Box>
-                    <Box justifyContent={"center"} ml={"24"} mt={"28"}flex={5}>
+                    <Box justifyContent={"center"} pt={"44"} ml={"20"} mt={"28"}flex={5}>
                         <Button colorScheme={"whatsapp"} onClick={() => formik.handleSubmit()}>Create Product</Button>
                     </Box>
                 </Flex>
@@ -278,40 +263,12 @@ export default function AddProductForm(){
             </Box>
             </Box>
         </Flex>
+        </Modal>
+        <Group>
+            <Button onClick={() => setOpened(true)} leftIcon={<PlusSquareIcon />} colorScheme='teal' variant='solid'>
+                Add Product
+            </Button>
+        </Group>
+    </>
     )
 }
-{/* <Box>
-    <Flex
-    minH={"-moz-fit-content"}
-    align={"center"}
-    justify={"center"}>
-        <Stack spacing={4}>
-            <FormControl>
-                <FormLabel>Image</FormLabel>
-                <Input type={'file'} 
-                display={"none"}
-                onChange={handleFile}
-                accept={"image/png, image/jpg, image/jpeg, image/gif"}
-                ref={inputFileRef}></Input>
-                <Button colorScheme={"teal"}
-                onClick={() => inputFileRef.current.click()}>
-                    Upload Image
-                </Button>
-            </FormControl>
-
-            <FormControl>
-                <FormLabel>Category Name</FormLabel>
-                <Input onChange={(e)=>{
-                    formik.setFieldValue("name", e.target.value)
-                }}></Input>
-            </FormControl>
-
-            <FormControl align={"center"}>
-                <Button colorScheme={"teal"}
-                onClick={() => formik.handleSubmit()}>
-                    Submit
-                </Button>
-            </FormControl>
-        </Stack>
-    </Flex>
-</Box> */}

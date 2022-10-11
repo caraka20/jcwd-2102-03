@@ -16,10 +16,6 @@ const upload = multer({
     }
 })
 
-router.get("/user", productController.getAllProduct4User)
-
-router.get("/admin", productController.getAllProduct4Admin)
-
 router.post(
     "/",
     fileUploader({
@@ -29,8 +25,8 @@ router.post(
     }).single("product_image"),
     productController.addProduct)
 
-router.post(
-    "/:id",
+router.patch(
+    "/",
     fileUploader({
         destinationFolder: "product_img",
         fileType:"image",
@@ -38,6 +34,10 @@ router.post(
     }).single("product_image"),
     productController.updateProduct)
 
-router.get("/", productController.getAllProducts)
+router.get("/", productController.getProductWithParams)
+
+router.delete("/:id", productController.deleteProduct)
+
+router.patch("/:id", productController.convertProduct)
 
 module.exports = router

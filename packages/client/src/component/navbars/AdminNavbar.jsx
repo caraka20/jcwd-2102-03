@@ -56,7 +56,7 @@ export default function AdminNav() {
       type: auth_types.AUTH_LOGOUT
     })
 
-      router.push("/homepage")
+      router.push("/Homepage")
   }
 
   return (

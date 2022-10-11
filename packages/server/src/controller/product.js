@@ -8,10 +8,105 @@ const {
     Unit,
     StockHistory
 } = require ("../lib/sequelize")
-const { Op, where } = require("sequelize")
+const { Op } = require("sequelize");
+const { create } = require("sequelize/lib/model");
 
 
 const productController = {
+    
+    getAllProducts: async(req, res) => {
+        try{
+            const { limit = 5, page = 1 , order, category} = req.query
+
+            const findProduct = await ProductStock.findAll({
+                include:[
+                    {model: Unit},
+                    {model: Product,
+                        include:[
+                            {model: ProductImage},
+                        ]}
+                ],
+                limit: limit ? parseInt(limit) : null,
+                offset: (page - 1) * limit,
+                order: [["createdAt", "ASC"]]
+            });
+
+            return res.status(200).json({
+                message: "fetching product",
+                results: findProduct,
+            })
+
+        } catch (err) {
+            console.log(err)
+
+            res.status(400).json({
+                message: "Error fetching"
+            })
+        }
+    },
+
+    getProductWithParams: async(req, res) => {
+        try{
+            const { limit , page = 1 , orderby, sort, category} = req.query
+
+                if(category){
+                    const findProduct = await Product.findAll({
+                        include:[
+                                {model: Unit , through : { attributes: ["stock", "total_sold", "init_price", "sell_price", "is_converted", "amount_per_stock", "createdAt", "updatedAt", 'id_unit', 'id_product' ] }},
+                                {model: ProductImage},
+                                {model: ProductDescription},
+                                {model: Category,
+                                    where:
+                                    { id : {[Op.eq] : `${category}` } } }
+                        ],
+                        limit: limit ? parseInt(limit) : null,
+                        offset: (page -1) * limit,
+                        order: orderby == "product_name" ? [[ orderby, sort]] :
+                        orderby == "sell_price" ?
+                        [[{ model: Unit, through: {model: ProductStock}},  `${orderby}`, `${sort}`]]
+
+                        
+                        // [[Unit, `${orderby}`, `${sort}`]] 
+                        : [] }
+                    );
+        
+                    return res.status(200).json({
+                        message: "fetching product",
+                        results: findProduct,
+                    })
+                } else {
+                    console.log("asd")
+                    const findProduct = await Product.findAll({
+                        include:[
+                            {model: Unit , through : { attributes: ["stock", "total_sold", "init_price", "sell_price", "is_converted", "amount_per_stock", "createdAt", "updatedAt",'id_unit', 'id_product' ]}},
+                            {model: ProductImage},
+                            {model: ProductDescription},
+                            {model: Category}
+                    ],
+                    limit: limit ? parseInt(limit) : null,
+                    offset: (page -1) * limit,
+                    order: orderby == "product_name" ? [[ orderby, sort]] :
+                    orderby == "sell_price" ?
+                    [[{ model: Unit,  as: 'Units' },  `${orderby}`, `${sort}`]]
+
+                    
+                    // [[Unit, `${orderby}`, `${sort}`]] 
+                    : [] 
+                } );
+                return res.status(200).json({
+                    message: "fetching product",
+                    results: findProduct,
+                })
+                    };
+                    
+                } catch (err) {
+                    console.log(err)
+
+                    res.status(400).json({
+                        message:  res.status.message
+                    })
+            }
+    },
 
     addProduct: async (req, res) => {
         try{
@@ -29,21 +124,9 @@ const productController = {
                 desc,
                 type_hist,
                 category1,
-                category2,
-                category3
             } = req.body
 
             console.log(req.body)
-            
-            const arr_cat = [category1, category2, category3];
-
-            if(category3 == null){
-                arr_cat.splice(2, 1)
-            }
-
-            if(category2 == null && category3 == null){
-                arr_cat.splice(2, 2)
-            }
 
             const { filename } = req.file
             
@@ -53,33 +136,22 @@ const productController = {
                 type: type,  
             })
 
-            arr_cat.map((val) => (
-                ProductCategory.create({
-                    id_product: newProduct.id,
-                    id_category: val
-                })
-            ))
-            
-            // const lastCreatedProduct = await Product.max("id")
-            // console.log(arr_cat)
-
-            // string_cat.map((val) => {
-            //     ProductCategory.create({
-            //         id_product: newProduct.id,
-            //         id_category: val.id
-            //     })
-            // })
-
+            ProductCategory.create({
+                id_product: newProduct.id,
+                id_category: category1
+            })
 
             await ProductDescription.create({
                 description,
                 id_product: newProduct.id
             })
 
-            await ProductImage.create({
-                product_image: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
-                id_product: newProduct.id
-            })
+            if(filename){
+                await ProductImage.create({
+                    product_image: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
+                    id_product: newProduct.id
+                })
+            }
 
             await ProductStock.create({
                 stock,
@@ -112,305 +184,98 @@ const productController = {
         }
     },
 
-    // <-- Fetch product buat tabel user -->
-
-    getAllProduct4User: async (req, res) => {
-        try{
-            const { orderby, sort, category, page = 1, limit, searchcondition, category2, category3} = req.query
-
-            let findProduct
-
-            if (!searchcondition) {
-                findProduct = await Product.findAll({
-                    offset: (page- -1) * limit,
-                    limit: limit ? parseInt(limit) : undefined,
-                    where: {
-                        deletedAt: {
-                            [Op.ne] : true
-                        }
-                    },
-                    include: [
-                        {model: ProductDescription},
-                        {model: ProductCategory,
-                        include: 
-                        [
-                            {model: Category,
-                            where: category || category2 || category3 ? {
-                                [Op.or]: [{category: `${category}`}, {category: `${category2}`}, {category: `${category3}`}, ]
-                            } : {}
-                        }],
-                    },
-                    { model: ProductStock,
-                    include: [{model: Unit}],
-                    where:{
-                        is_converted: {[Op.ne] : true}
-                    }
-                    },
-                    {
-                        model : ProductImage
-                    },
-                ],
-                    order: orderby == "product_name" && sort ? [[`${orderby}`, `${sort}`]] :
-                    orderby == "sell_price" && sort ? [[ProductStock, `${orderby}`, `${sort}`]]
-                    : [],
-                })
-
-            } else {
-                findProduct = await Product.findAll({
-                    offset: (page - 1) * limit,
-                    limit: limit ? parseInt(limit) : undefined,
-                    where: {
-                        product_name: {
-                            [Op.substring]: `${searchcondition}`
-                        }
-                    },
-                    include: [
-                        {model: ProductDescription},
-                        {model: ProductCategory,
-                        include: [{
-                            model: Category,
-                            where: category || category2 || category3 ? {
-                                [Op.or]: [{category}]
-                            } : {}
-                        }],
-                    },
-                    {
-                        model: ProductStock,
-                        include: [{
-                            model: Unit
-                        }],
-                        where: {
-                            is_converted: {[Op.ne] : true}
-                        }
-                    },
-                    {
-                        model : ProductImage
-                    }
-                ],
-                order: orderby == "product_name" && sort ? [[`${orderby}`, `${sort}`]] :
-                    orderby == "sell_price" && sort ? [[ProductStock, `${orderby}`, `${sort}`]]
-                    : [],
-                })
-            }
-
-            return res.status(200).json({
-                message: "fetching data",
-                result: findProduct
-            })
-            
-        } catch (err) {
-            console.log(err)
-
-            res.status(400).json({
-                message: err.toString()
-            })
-        }
-    },
-
-    // <-- Fetch product buat tabel admin -->
-
-    getAllProduct4Admin: async (req, res) => {
-        try{
-            const { orderby, sort, category1, page = 1, limit = 5, searchcondition, category2, category3} = req.query
-            
-            let findProduct
-            
-            if (!req.query) {
-                
-                console.log("masuk if")
-                console.log(req.query)
-
-                findProduct = await Product.findAll({
-                    where: {
-                        deletedAt: {
-                            [Op.ne] : true
-                        }
-                    },
-                    include: [
-                        {model: ProductDescription},
-                        {model: ProductCategory,
-                        include: 
-                        [
-                            {model: Category,
-                            where: category1 || category2 || category3 ? {
-                                [Op.or]: [{category: `${category1}`}, {category: `${category2}`}, {category: `${category3}`}, ]
-                            } : {}
-                        }],
-                    },
-                    { model: ProductStock,
-                    include: [{model: Unit}],
-                    },
-                    {
-                        model : ProductImage
-                    },
-                ],
-                    order: orderby == "product_name" && sort ? [[`${orderby}`, `${sort}`]] :
-                    orderby == "sell_price" && sort ? [[ProductStock, `${orderby}`, `${sort}`]]
-                    : [],
-                })
-
-                console.log("error opne")
-
-            } else {
-
-                findProduct = await Product.findAll({
-                    offset: (page - 1) * limit,
-                    limit: limit ? parseInt(limit) : undefined,
-                    where: {
-                        product_name: {
-                            [Op.substring]: `${searchcondition}`
-                        }
-                    },
-                    include: [
-                        {model: ProductDescription},
-                        {model: ProductCategory,
-                        include: [{
-                            model: Category,
-                            where: category1 || category2 || category3 ? {
-                                [Op.or]: [{category1}]
-                            } : {}
-                        }],
-                    },
-                    {
-                        model: ProductStock,
-                        include: [{
-                            model: Unit
-                        }],
-                    },
-                    {
-                        model : ProductImage
-                    }
-                ],
-                order: orderby == "product_name" && sort ? [[`${orderby}`, `${sort}`]] :
-                    orderby == "sell_price" && sort ? [[ProductStock, `${orderby}`, `${sort}`]]
-                    : [],
-                })
-            }
-
-            return res.status(200).json({
-                message: "fetching data",
-                result: findProduct,
-            })
-            
-        } catch (err) {
-            console.log(err)
-
-            res.status(400).json({
-                message: err.toString()
-            })
-        }
-    },
-
     updateProduct: async (req, res) => {
         try{
             const {
+                id,
                 product_name, 
                 bpom_code, 
                 type,
-                desc,
-                type_hist,
                 id_unit,
                 description,
-                composition,
-                warning,
-                expire,
                 stock, 
                 init_price, 
                 sell_price, 
                 amount_per_stock,
-                arr_cat
+                desc,
+                type_hist,
+                category1,
             } = req.body
-
-            const { id_prod } = req.params
 
             console.log(req.body)
 
-            console.log(req.params)
-
-            // const arr_cat = [14, 11];
-
-            const { filename } = req.file
+            const filename = req.file?.filename
             
             await Product.update({
                 product_name,
                 bpom_code,
                 type: type,  
             },{
-                where: {
-                    id: id_prod
+                where:{
+                    id: id
                 }
             })
 
-            const product = await Product.findByPk(id_prod)
-            console.log(product)
+            ProductCategory.update({
+                id_category: category1
+            },{
+                where:{
+                    id_product: id,
+                }
+            })
 
-            arr_cat.map((val) => (
-                ProductCategory.update({
-                    id_category: val
-                },{
-                    where: {
-                        id_product: id_prod
+            await ProductDescription.update(
+                {
+                    description,
+                },
+                {
+                    where:{
+                        id_product: id
                     }
-                })
-            ))
-            
-            // const lastCreatedProduct = await Product.max("id")
-            // console.log(arr_cat)
-
-            // string_cat.map((val) => {
-            //     ProductCategory.create({
-            //         id_product: newProduct.id,
-            //         id_category: val.id
-            //     })
-            // })
-
-
-            await ProductDescription.update({
-                description,
-                composition,
-                warning,
-                expire,
-            },{
-                where: {
-                    id_product: id_prod
                 }
-            })
+            )
 
-            await ProductImage.update({
-                product_image: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
-            },{
-                where: {
-                    id_product: id_prod
-                }
-            })
-
-            await ProductStock.update({
+            await ProductStock.update(
+                {
                 stock,
                 init_price,
                 sell_price,
                 amount_per_stock,
                 id_unit,
-                
-            },{
-                where: {
-                    id_product: id_prod
+                },
+                {
+                    where: {
+                        [Op.and]:[
+                            {id_product: id},
+                           {amount_per_stock: {[Op.ne] : null}}
+                       ]
+                    }
                 }
-            })
+            )
 
-            await StockHistory.update({
+            await StockHistory.create({
                 qty: stock,
                 type: type_hist,
                 desc,
                 id_unit,
-            },{
-                where:{
-                    id_product: id_prod
-                }
+                id_product: id
             })
 
+            if(filename){
+                await ProductImage.update(
+                    {
+                        product_image: `${process.env.UPLOAD_FILE_DOMAIN}/${process.env.PATH_PRODUCTIMG}/${filename}`,
+                    },
+                    {
+                        where:{
+                            id_product: id
+                        }
+                    }
+                )
+            }
+
             return res.status(200).json({
-                message: "New product created",
-                result: product,
+                message: "Product updated",
             })
         } catch (err) {
             console.log(err)
@@ -422,36 +287,245 @@ const productController = {
         }
     },
 
-    getAllProducts: async(req, res) => {
-        try{
-            const { limit = 10, page = 1 } = req.query
+    deleteProduct: async (req, res) => {
 
-            const findProduct = await ProductStock.findAll({
-                include:[
-                    {model: Unit},
-                    {model: Product,
-                        include:[
-                            {model: ProductImage},
-                        ]}
-                ],
-                limit: limit ? parseInt(limit) : null,
-                offset: (page - 1) * limit,
-                order: [["createdAt", "DESC"]]
-            });
+        try{
+            
+            const { id } = req.params
+            const { id_unit } = req.body
+            
+            await StockHistory.create({
+                qty: 0,
+                type: "Update Stock",
+                desc: "Product dihapus",
+                id_unit,
+                id_product: id
+            })
+
+            ProductCategory.destroy(
+                {   
+                    where: {
+                        id_product: id,
+                    }
+                }
+            )
+            
+            await ProductDescription.destroy(
+                {
+                    where:{
+                        id_product: id
+                    }
+                }
+                )
+                
+
+                await ProductImage.destroy(
+                    {
+                        where:{
+                            id_product: id
+                        }
+                    }
+            )
+            
+            await ProductStock.destroy(
+                {
+                    where: {
+                        id_product: id,
+                    }
+                }
+            )
+
+            await Product.destroy({
+                where: {
+                    id: id,
+                }  
+            })
+            
+            
+            return res.status(200).json({
+                message: "Product updated",
+            })
+        } catch (err) {
+            console.log(err)
+            
+            res.status(400).json({
+                message: err.toString()
+            })
+
+        }
+    },
+
+    updateProductStock: async(req, res) => {
+        try{
+            
+            const {id} = req.params
+            const {stock, id_unit, id_prod} = req.body
+
+            await ProductStock.update(
+                {
+                stock: stock
+                },
+                {
+                    where:{
+                        id: id
+                    }
+                }
+            )
+            
+            await StockHistory.create({
+                qty: stock,
+                type: "Update",
+                desc: "Update Stock",
+                id_unit,
+                id_product: id
+            })
 
             return res.status(200).json({
-                message: "fetching product",
-                results: findProduct,
+                message: "Stock Updated"
             })
+
+        } catch {
+            console.log(err)
+            
+            res.status(400).json({
+                message: err.toString()
+            })
+        }
+    },
+
+    convertProduct: async (req, res) => {
+        try{
+            const {id} = req.params
+
+            const {
+                id_unit,
+                id_unit2,
+                init_price, 
+                sell_price, 
+                amount_per_stock,
+                is_converted,
+            } = req.body
+
+            // console.log(req.body)
+
+            let aps = amount_per_stock
+            aps = parseInt(amount_per_stock)
+            
+            if(is_converted){
+                
+                const convertTarget = ProductStock.findOne({
+                    where: {
+                        [Op.and]:[
+                             {id_product: id},
+                            {is_converted: true}
+                        ]
+                    }
+                })
+
+                let newStock = convertTarget.stock - 1
+
+                // console.log("This is new Stock " + newStock)
+
+                await ProductStock.update({
+                    stock: newStock,
+                    is_converted: false
+                },{
+                    where:{
+                        [Op.and]:[
+                            {id_product: id},
+                           {is_converted: true},
+                           {amount_per_stock: {[Op.eq]: null}}
+                       ]
+                    }
+                })
+                
+                await ProductStock.create({
+                    id_product: id,
+                    sell_price: sell_price,
+                    init_price: init_price,
+                    id_unit: id_unit2,
+                    stock: amount_per_stock,
+                    is_converted: true
+                })
+                
+            } else {
+
+                const convertTarget = await ProductStock.findOne({
+                    where: {
+                        [Op.and]:[
+                             {id_product: id},
+                            {is_converted: false}
+                        ]
+                    }
+                })
+
+                const convertedProduct = await ProductStock.findOne({
+                    where:{
+                        [Op.and]:[
+                            {id_product: id},
+                           {is_converted: true}
+                       ]
+                    }
+                })
+
+                console.log(convertTarget)
+                // console.log(convertedProduct)
+                
+                let newStock = convertTarget.stock - 1
+                let addStock = convertedProduct.stock + aps
+
+                console.log("This is new Stock " + newStock)
+                
+                await ProductStock.update({
+                    stock: newStock,
+                },{
+                    where:{
+                        [Op.and]:[
+                            {id_product: id},
+                           {is_converted: true}
+                       ]
+                    }
+                })
+
+                
+                await ProductStock.update({
+                    stock: addStock,
+                },{
+                    where:{
+                        [Op.and]:[
+                            {id_product: id},
+                           {is_converted: false}
+                       ]
+                    }
+                })
+            }
+
+            await StockHistory.create({
+                qty: 1,
+                type: "Conversion",
+                desc: "Pengurangan",
+                id_unit: id_unit,
+                id_product: id
+            })
+            
+            await StockHistory.create({
+                qty: amount_per_stock,
+                type: "Conversion",
+                desc: "Penambahan",
+                id_unit: id_unit2,
+                id_product: id
+            })
+            
 
         } catch (err) {
             console.log(err)
-
+            
             res.status(400).json({
-                message: "Error fetching"
+                message: err.toString()
             })
         }
-    }
+    },
+    
 }
 
 module.exports = productController;

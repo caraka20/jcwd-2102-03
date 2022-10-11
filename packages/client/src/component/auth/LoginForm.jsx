@@ -130,8 +130,8 @@ import Image from "next/image";
           </Box>
           
           <Box rounded={"lg"} bg={useColorModeValue("white", "gray.700")} boxShadow={"lg"} p={8}>
-            <Text>Don't have an account yet?
-              <Link onClick={() => router.push("/signup")} colorScheme="facebook"> Register now!</Link>
+            <Text>Dont have an account yet?
+              <Link onClick={() => router.push("/Signup")} colorScheme="facebook"> Register now!</Link>
               </Text>
           </Box>
         </Stack>

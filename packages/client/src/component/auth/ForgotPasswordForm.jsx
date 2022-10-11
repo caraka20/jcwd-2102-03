@@ -52,7 +52,7 @@ import {
             <ModalBody pb={6}>
               <FormControl>
                 {/* <Text>{formik.values.email}</Text> */}
-                <FormLabel>Enter your email and we'll send you a link to reset your password.</FormLabel>
+                <FormLabel>Enter your email and well send you a link to reset your password</FormLabel>
                 <Input placeholder='Email'
                   onChange={(event) =>
                     formik.setFieldValue("email", event.target.value)} mt={'10px'} maxLength={'40'} />

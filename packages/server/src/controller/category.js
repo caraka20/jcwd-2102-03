@@ -73,7 +73,7 @@ const categoryController = {
 
             const { name } = req.body
 
-            const  filename = req.file?.filename
+            const filename = req.file?.filename
 
             const editParams = { name }
 

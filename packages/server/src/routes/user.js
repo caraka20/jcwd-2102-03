@@ -31,6 +31,8 @@ router.patch("/edit-profile/:id_user", userController.editProfile)
 
 router.post("/resendVerification", userController.resendVerification)
 
+router.patch("/:id_user", userController.changePassword)
+
 // router.post("/loginV2", userController.loginV2)
 
 // router.post("/registerV2", userController.registerV2)

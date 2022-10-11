@@ -11,6 +11,7 @@ const userController = require("./routes/user")
 const categoryController = require("./routes/category")
 const productController = require("./routes/product")
 const unitController = require("./routes/unit")
+const stockHistoryController = require("./routes/stockHistory")
 
 const app = express()
 app.use(bodyParser.urlencoded({extended: true}))
@@ -28,9 +29,10 @@ app.use("/user", userController)
 app.use("/category", categoryController)
 app.use("/product", productController)
 app.use("/unit", unitController)
+app.use("/history", stockHistoryController)
 
 app.use("/category_img", express.static(`${__dirname}/public/category_img`))
-app.use("/img_url", express.static(`${__dirname}/public/product_img`))
+app.use("/product_img", express.static(`${__dirname}/public/product_img`))
 
 app.get("/", (req, res) => {
     res.send("API is running")
