@@ -1,10 +1,11 @@
-import { Box, Button, Flex, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, FormLabel, Image, Input, Stack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useRef } from "react";
 import { useState } from "react";
 import { axiosInstance } from "../../../lib/hoc/api";
 import { useToast, } from "@chakra-ui/react";
 import { ref } from "yup";
+import NextImage from "next/image";
 
 
 export default function AddCategoryForm(){
@@ -12,6 +13,7 @@ export default function AddCategoryForm(){
     const [selectedFile, setSelectedFile] = useState(null)
     const toast = useToast()
     const inputFileRef = useRef(null)
+    const [showImage, setShowImage] = useState(null)
 
     const handleFile = (event) => {
         setSelectedFile(event.target.files[0])
@@ -61,6 +63,11 @@ export default function AddCategoryForm(){
                 <Stack spacing={4}>
                     <FormControl>
                         <FormLabel>Image</FormLabel>
+                        <Box w='400px' h='300px' rounded="lg">
+                            {showImage !== 
+                            <NextImage src={""} rounded="lg"/>
+                            && <Image src={showImage} alt="image" objectFit='cover' w={"400px"} h={"300px"} rounded="lg" />}
+                        </Box>
                         <Input type={'file'} 
                         display={"none"}
                         onChange={handleFile}
@@ -70,6 +77,10 @@ export default function AddCategoryForm(){
                         onClick={() => inputFileRef.current.click()}>
                             Upload Image
                         </Button>
+                        <Button size='sm' mt='5px' ml='5px' background='#FFB4B4' onClick={() => {
+                            setShowImage(null)
+                            setSelectedFile(null)
+                        }}>Cancel</Button>
                     </FormControl>
 
                     <FormControl>

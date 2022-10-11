@@ -99,11 +99,6 @@ import {
     }
     return (
         <>
-            {/* <Flex
-                minH={'100vh'}
-                align={'center'}
-                justify={'center'}
-                bg={useColorModeValue('gray.50', 'gray.800')}> */}
                 <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'} textAlign={'center'}>
@@ -116,14 +111,6 @@ import {
                     boxShadow={'lg'}
                     p={8}>
                     <Stack spacing={4}>
-
-                    {/* <FormControl id="fullname" isRequired>
-                        <FormLabel>Full name</FormLabel>
-                        <Input type="text" onChange={(e)=>{
-                            formik.setFieldValue("full_name", e.target.value)
-                        }}/>
-                        <FormHelperText>{formik.errors.full_name}</FormHelperText>
-                    </FormControl> */}
 
                     <FormControl id="phoneNum" isRequired>
                         <FormLabel>Phone Number</FormLabel>
@@ -196,7 +183,7 @@ import {
                         _hover={{
                             bg: 'blue.500',
                         }}
-                        onClick={submit()}
+                        onClick={() => submit()}
                         disabled={formik.values.username && formik.values.email && formik.values.password && formik.values.passwordConfirmation ? false : true }
                          >
                         Sign up

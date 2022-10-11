@@ -90,30 +90,11 @@ export default function TableCategory (props) {
             })
         }
     }
-    
-    // async function confirmDelete(id) {
-
-    //     return(
-    //             <Box>
-    //                 <Flex minH={"-moz-fit-content"}
-    //                 align={"center"}
-    //                 justify={"center"}>
-    //                     <Text>
-    //                         Are you sure you want to delete this category?
-    //                     </Text>
-    //                     <HStack>
-    //                     <Button>Yes</Button>
-    //                     <Button>No</Button>
-    //                     </HStack>
-    //                 </Flex>
-    //             </Box>
-    //     )
-    // }
 
     const renderCategoryTable = () => {
         return listCategory.map((val, index) => {
             return (
-                <Tr>
+                <Tr key={index}>
                     <Td>{val.id}</Td>
                     <Td>
                        <Img src={val?.category_img} w={"90px"} h={"50px"}/>
@@ -160,14 +141,13 @@ export default function TableCategory (props) {
           minH="full"
           minW="full"
         >
-          {/* <Heading fontWeight="normal" mb={4} letterSpacing="tight">
-            Welcome back, {""}
-            <Flex display="inline-flex" fontWeight="bold">
-              {userSelector.username}
-            </Flex>
-          </Heading> */}
-  
-          {/* -------------CATEGORY------------ */}
+
+          <Box p={4}>
+              <HStack spacing={5} align={"center"} justifyContent={"space-evenly"}>
+              <Button bg={"gainsboro"} onClick={() => router.push("/Product/History")}>History</Button>
+              <Button bg={"gainsboro"} onClick={() => router.push("/Product")}>Product</Button>
+              </HStack>
+          </Box>
   
           <Flex justifyContent="space-between" mt={8}>
             <Flex align="flex-end">

@@ -27,7 +27,7 @@ async function SendVerification(id, email, username){
 
 async function resetPassword(email, username){
 
-    const token = generateToken({email, isEmailVerification: true}, "600s")
+    const token = await generateToken({email, isEmailVerification: true}, "600s")
     const url_reset = process.env.LINK_RESET + token
 
     await mailer ({
@@ -35,7 +35,7 @@ async function resetPassword(email, username){
       subject: "Hi " + username + " your reset password submission has been accepted",
       html: `<div> <h1> You can now reset your password </h1> </div>
       <div> Please click the button below to continue <div>
-      <div> <button href="${url_reset}"> Reset Password </button>`
+      <div> <button> <a href="${url_reset}"> Reset Password </a> </button>`
     })
  
     return token
@@ -269,7 +269,7 @@ const userController = {
       })
 
       const verificationLink =
-        `http://localhost:3000/verification/${verificationToken}`
+        `http://localhost:3000/Verification/${verificationToken}`
 
       const template = fs.readFileSync(__dirname + "/../templates/verify.html").toString()
 
@@ -362,12 +362,13 @@ const userController = {
         })
     }
   },
+
   resetPassword: async (req,res) => {
     try{
-      const { resetToken } = req.params;
+      const { resettoken } = req.params;
       const { password } = req.body;
-      console.log(resetToken);
-      const isTokenVerified = verifyToken(resetToken, process.env.JWT_SECRET_KEY)
+      console.log(resettoken);
+      const isTokenVerified = verifyToken(resettoken, process.env.JWT_SECRET_KEY)
 
       if(!isTokenVerified || !isTokenVerified.isEmailVerification){
       throw new Error("token is invalid")
@@ -388,6 +389,33 @@ const userController = {
       res.status(400).json({
         message: err.toString()
       })
+    }
+  },
+
+  changePassword: async (req, res) => {
+    try{
+      
+      const { id_user } = req.params
+      const { password, } = req.body;
+  
+      const hashedPassword = bcrypt.hashSync(password, 5);
+  
+      await User.update({password: hashedPassword,},
+        {where:{
+          id: id_user 
+        } } );
+
+        return res.status(200).json({
+          message: "Password Changed",
+        })
+
+    } catch (err) {
+      console.log(err)
+      res.status(400).json({
+        message: err.toString(),
+        success: false
+      })
+
     }
   },
 
@@ -417,6 +445,7 @@ const userController = {
       })
     }
   }
+
 
 }
 

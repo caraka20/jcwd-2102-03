@@ -20,7 +20,27 @@ const unitController = {
                 message: "error"
             })
         }
-    }
+    },
+    
+    addUnit: async (req, res) => {
+        try{
+            const {unit_name} = req.body
+
+            await Unit.create({
+                unit_name
+            })
+
+            return res.status(200).json({
+                message: "New unit created",
+            })
+            
+        }catch (err){
+            console.log(err)
+            return res.status(500).json({
+                message: "Error creating unit"
+            })
+        }
+    },
 }
 
 module.exports = unitController

@@ -44,7 +44,7 @@ import { BiError } from "react-icons/bi"
       if(verToken){
         updateVerif()
       }
-    }, [router.isReady])
+    }, [router.isReady, verToken])
 
     return (
       <>
@@ -53,12 +53,13 @@ import { BiError } from "react-icons/bi"
         minH={'100vh'}
         align={'center'}
         justify={'center'}
-        bg={useColorModeValue('gray.50', 'gray.800')}>
+        // bg={useColorModeValue('gray.50', 'gray.800')}
+        >
         <Stack
           spacing={4}
         //   w={'full'}
           maxW={'2xl'}
-          bg={useColorModeValue('white', 'gray.700')}
+          // bg={useColorModeValue('white', 'gray.700')}
           rounded={'xl'}
           boxShadow={'lg'}
           p={6}

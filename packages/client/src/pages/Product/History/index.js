@@ -1,17 +1,15 @@
 import { Box, Center, Divider, Flex, Heading, Spinner, VStack, Text, Avatar } from "@chakra-ui/react"
 import { useState } from "react"
 import Head from "next/head"
-import AdminNav from "../../component/navbars/AdminNavbar"
-import Image from 'next/image'
-import banner from '../../asset/imgs/medicure-banner.png'
+import AdminNav from "../../../component/navbars/AdminNavbar"
+import banner from '../../../asset/imgs/medicure-banner.png'
 import { useEffect } from "react"
 import { useRouter } from "next/router"
 import { useSelector } from "react-redux"
-import Sidebar from "../../component/admin/ResponsiveSidebar"
-import TableCategory from "../../component/admin/Tables/TableCategory"
-import { Header } from "@mantine/core"
+import Sidebar from "../../../component/admin/ResponsiveSidebar"
+import TableHistory from "../../../component/admin/Tables/TableHistory"
 
-export default function Dashboard(){
+export default function History(){
     
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
@@ -26,7 +24,7 @@ export default function Dashboard(){
         else{
             setIsLoading(false);
         }
-      }, [userSelector?.is_admin, router]);
+      }, [userSelector?.is_admin]);
 
 
     return(
@@ -47,9 +45,7 @@ export default function Dashboard(){
                     <Sidebar/>
                 </Box>
                 <Box flex={10}>
-                    <Heading as="h2" size="lg" letterSpacing="tight">
-                    Admin Dashboard
-                </Heading>
+                    <TableHistory></TableHistory>
                 </Box>
             </Flex>
 

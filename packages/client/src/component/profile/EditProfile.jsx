@@ -8,9 +8,9 @@ import qs from "qs"
 import YupPassword from "yup-password"
 import { axiosInstance } from "../../lib/hoc/api";
 import ProfilePicture from "./EditProfilePict";
+import ProfilePictureCard from "./ProfilePictureCard";
 
 export default function EditProfile(props) {
-  const { isOpen: isOpenPP, onOpen: onOpenPP, onClose: onClosePP } = useDisclosure()
   const userSelector = useSelector((state) => (state.auth))
   const dispatch = useDispatch()
   YupPassword(Yup)
@@ -77,30 +77,17 @@ export default function EditProfile(props) {
       formik.setSubmitting(false)
     }
   })
-
+  
   //
   return (
-  <>
-    <Box>
-    {/* Edit Profile Picture */}
-      <Box>
-        <Button onClick={onOpenPP}>
-          Change Picture
-        </Button>
-        <Modal isOpen={isOpenPP} onClose={onClosePP}>
-          <ModalOverlay />
-          <ModalContent>
-            <ProfilePicture onClose={onClosePP} />
-          </ModalContent>
-        </Modal>
-      </Box>
+    <>
+      <Flex>
 
-    {/* Edit User Profile */}
+      {/* Edit User Profile */}
       <Box>
         <Heading as='info' size='lg'>
           Account Information
         </Heading>
-        <Box>
           <FormControl isInvalid={formik.errors.username}>
             <FormLabel>Username : </FormLabel>
             <Input
@@ -111,8 +98,6 @@ export default function EditProfile(props) {
               disabled
             />
           </FormControl>
-        </Box>
-        <Box>
           <FormControl isInvalid={formik.errors.email}>
             <FormLabel>Email : </FormLabel>
             <Input
@@ -123,8 +108,6 @@ export default function EditProfile(props) {
               onChange={(e) => {formik.setFieldValue("name", e.target.value)}}
             />
           </FormControl>
-        </Box>
-        <Box>
           <FormControl isInvalid={formik.errors.name}>
             <FormLabel>Fullname : </FormLabel>
             <Input
@@ -135,8 +118,6 @@ export default function EditProfile(props) {
               onChange={(e) => {formik.setFieldValue("name", e.target.value)}}
             />
           </FormControl>
-        </Box>
-        <Box>
           <FormControl isInvalid={formik.errors.dob}>
             <FormLabel>Date of birth : </FormLabel>
             <Input
@@ -146,9 +127,7 @@ export default function EditProfile(props) {
               defaultValue={userSelector.dob}
               onChange={(e) => {formik.setFieldValue("dob", e.target.value)}}
             />
-          </FormControl>
-        </Box>
-        <Box>
+          </FormControl>  
           <FormControl isInvalid={formik.errors.gender}>
             <FormLabel>Gender : </FormLabel>
             <RadioGroup
@@ -162,9 +141,7 @@ export default function EditProfile(props) {
               </Stack>
             </RadioGroup>
           </FormControl>
-        </Box>
       
-        <Box>
           <FormControl isInvalid={formik.errors.phoneNum}>
             <FormLabel>Phone Number : </FormLabel>
             <Input
@@ -175,21 +152,15 @@ export default function EditProfile(props) {
               onChange={(e) => {formik.setFieldValue("phoneNum", e.target.value)}}
             />
           </FormControl>
-        </Box>
-
-        {/* Address */}
-        <Box>
           <Text>Address </Text>
           <Button>Edit Address</Button>
-        </Box>
-      </Box>
-      
-      <Button onClick={formik.handleSubmit}>
+      <Button onClick={formik.handleSubmit} marginLeft={"1"} colorScheme={"teal"}>
         Save Changes
       </Button>
-      <Box>
+
+        {/* Address */}
       </Box>
-    </Box>
+    </Flex>
   </>
   )
 }

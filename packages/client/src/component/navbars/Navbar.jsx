@@ -44,6 +44,7 @@ import auth_types from '../../redux/reducer/auth/type';
 import Router from 'next/router';
 import axios from 'axios';
 import { axiosInstance } from '../../lib/hoc/api';
+import qs from "querystring"
 
 
 
@@ -65,7 +66,7 @@ export default function Navbar() {
         type: auth_types.AUTH_LOGOUT
       })
 
-        Router.push("/login")
+        Router.push("/Login")
     }
 
     function resendVerification(){
@@ -77,7 +78,7 @@ export default function Navbar() {
           email: userSelector.email
         }
         
-        axiosInstance.post("/resendVerification", qs.stringify(body))
+        axiosInstance.post("/user/resendVerification", qs.stringify(body))
         
         console.log(body)
 
@@ -122,7 +123,7 @@ export default function Navbar() {
               display={{ base: 'none', md: 'flex' }}>
                 <Box display={"flex"}>
                   <Image src={homelogo} width={"110px"} alt=""/>
-                  <Button bgColor={"white"} onClick={() => Router.push("/homepage")}>
+                  <Button bgColor={"white"} onClick={() => Router.push("/Homepage")}>
                   Home
                   </Button>
                 </Box>
@@ -236,8 +237,8 @@ export default function Navbar() {
           <HStack spacing={5} align={"center"} justifyContent={"space-between"}>
           <Button bg={"white"}>Medication</Button>
           <Button bg={"white"}>Vitamins & Supplements</Button>
-          <Button bg={"white"}>Women's Health</Button>
-          <Button bg={"white"}>Men's Health</Button>
+          <Button bg={"white"}>Womens Health</Button>
+          <Button bg={"white"}>Mens Health</Button>
           <Button bg={"white"}>Infant & Children</Button>
           </HStack>
       </Box>
