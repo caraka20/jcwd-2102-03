@@ -1,6 +1,6 @@
 import {
     Box, Text, Stack, Heading, Button, InputGroup, Icon, FormHelperText, Progress,
-    InputRightElement, FormControl, FormLabel, Input, Center, propNames
+    InputRightElement, FormControl, FormLabel, Input, Center, propNames, 
   } from '@chakra-ui/react';
   import { useState } from 'react';
   import Image from 'next/image';
@@ -11,7 +11,7 @@ import {
   import { axiosInstance } from '../../lib/hoc/api';
   import { useRouter } from "next/router";
   import qs from 'qs';
-import { Modal } from '@mantine/core';
+import { Modal, Group } from '@mantine/core';
   
   export default function ChangePasswordForm() {
     const [viewPassword, setViewPassword] = useState(false);
