@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const Unit = (sequelize) => {
     return sequelize.define(
-    "Unit", {
+    "unit", {
         unit_name:{
             type: DataTypes.STRING,
             allowNull: false

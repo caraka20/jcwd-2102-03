@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const OrderStatus = (sequelize) => {
     return sequelize.define(
-    "OrderStatus", {
+    "order_status", {
         status:{
             type: DataTypes.STRING,
         },

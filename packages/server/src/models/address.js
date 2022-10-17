@@ -2,7 +2,7 @@ const { DataTypes } = require ("sequelize")
 
 const address = (sequelize) => {
     return sequelize.define(
-        "Address",
+        "address",
         {
             address_detail: {
                 type: DataTypes.STRING,

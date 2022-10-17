@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const Token = (sequelize) => {
     return sequelize.define(
-    "Token", {
+    "token", {
         token:{
             type: DataTypes.STRING,
             allowNull: false

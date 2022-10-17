@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const Prescription = (sequelize) => {
     return sequelize.define(
-    "Prescription", {
+    "prescription", {
         image:{
             type: DataTypes.STRING,
         },

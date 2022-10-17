@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const Order = (sequelize) => {
     return sequelize.define(
-    "Order", {
+    "order", {
         invoice:{
             type: DataTypes.STRING,
             allowNull: false

@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const StockHistory = (sequelize) => {
     return sequelize.define(
-    "StockHistory", {
+    "stock_history", {
         qty:{
             type: DataTypes.INTEGER,
             allowNull: false

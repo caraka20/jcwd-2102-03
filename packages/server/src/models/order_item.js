@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize")
 
 const OrderItem = (sequelize) => {
     return sequelize.define(
-    "OrderItem", {
+    "order_item", {
         qty:{
             type: DataTypes.INTEGER,
         },
