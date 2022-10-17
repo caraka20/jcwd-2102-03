@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize")
 const phoneValidation = /\d{3}-\d{3}-\d{4}/
 
 const User = (sequelize) => {
-    return sequelize.define("User", {
+    return sequelize.define("user", {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
