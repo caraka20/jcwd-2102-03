@@ -33,7 +33,7 @@ import { BiError } from "react-icons/bi"
 
         console.log(verToken)
 
-        const res = await axiosInstance.patch("/user/Verify/" + verToken )
+        const res = await axiosInstance.patch("/user/verify/" + verToken )
 
         if(res.data){
           const success = res.data.success
