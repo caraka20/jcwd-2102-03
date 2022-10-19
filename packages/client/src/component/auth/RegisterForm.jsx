@@ -78,8 +78,26 @@ import {
         }),
         validateOnChange: false,
         onSubmit: async (values) => {
-            console.log(values)
-            dispatch(userRegister(values,formik.setSubmitting))
+            try{
+                console.log(values)
+                dispatch(userRegister(values,formik.setSubmitting))
+
+                toast({
+                    title: "Account registered, please check your email to verify your account!", 
+                    description: "",
+                    status: "success",
+                    isClosable: true    
+                 })
+
+            }catch (err){
+                toast({
+                    title: "Register failed", 
+                    description: "",
+                    status: "error",
+                    isClosable: true    
+                 })
+
+            }
         }
     })
 
@@ -89,13 +107,6 @@ import {
 
     async function submit() {
          await formik.handleSubmit()
-
-         toast({
-            title: "Account registered, please check your email to verify your account!", 
-            description: "",
-            status: "success",
-            isClosable: true    
-         })
     }
     return (
         <>
